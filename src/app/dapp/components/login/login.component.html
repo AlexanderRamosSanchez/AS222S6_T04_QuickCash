@@ -1,0 +1,226 @@
+<div class="login-container">
+  <!-- Formulario de Login Inicial -->
+  <div class="login-card" *ngIf="modalState === 'closed'">
+    <div class="logo-container">
+      <img src="assets/MetaMask_Fox.svg.png" alt="QuickCash Logo" class="logo">
+      <h1>QuickCash</h1>
+    </div>
+    
+    <h2>Iniciar Sesión</h2>
+    <p class="login-description">Ingresa tus credenciales para acceder a tu cuenta</p>
+    
+    <div class="form-group">
+      <label for="username">Nombre de usuario</label>
+      <input 
+        type="text" 
+        id="username" 
+        [(ngModel)]="username" 
+        placeholder="Ingrese su nombre de usuario"
+        required>
+    </div>
+    
+    <div class="form-group">
+      <label for="password">Contraseña</label>
+      <input 
+        type="password" 
+        id="password" 
+        [(ngModel)]="password" 
+        placeholder="Ingrese su contraseña"
+        required>
+    </div>
+    
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+    
+    <button (click)="login()" class="login-button">Iniciar Sesión</button>
+  </div>
+  
+  <!-- Modal de Opciones de Blockchain -->
+  <div class="modal-overlay" *ngIf="modalState === 'wallet-options'" (click)="closeWalletOptions()">
+    <div class="wallet-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Iniciar sesión en QuickCash</h2>
+        <button class="close-button" (click)="closeWalletOptions()">×</button>
+      </div>
+      
+      <div class="modal-content">
+        <div class="blockchain-options">
+          <button class="blockchain-option" (click)="selectWalletType('ethereum')">
+            <div class="blockchain-icon ethereum-icon">
+              <i class="fab fa-ethereum"></i>
+            </div>
+            <span>Iniciar sesión con Ethereum</span>
+          </button>
+          
+          <button class="blockchain-option disabled">
+            <div class="blockchain-icon solana-icon">
+              <img width="40" height="40" src="https://img.icons8.com/nolan/64/solana.png" alt="solana"/>
+            </div>
+            <span>Iniciar sesión con Solana</span>
+          </button>
+          
+          <button class="blockchain-option disabled">
+            <div class="blockchain-icon polygon-icon">
+              <img width="40" height="40" src="assets/polygon-logo-png_seeklogo-527156.png" alt="Polygon">
+            </div>
+            <span>Iniciar sesión con Polygon</span>
+          </button>
+          
+          <button class="blockchain-option disabled">
+            <div class="blockchain-icon binance-icon">
+              <img width="40" height="40" src="https://img.icons8.com/arcade/64/binance.png" alt="binance"/>
+            </div>
+            <span>Iniciar sesión con Binance</span>
+          </button>
+          
+          <div class="divider">
+            <span>O continúa con email</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button (click)="continueWithoutWallet()" class="secondary-button">
+          Continuar sin conectar wallet
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal de Opciones de Wallets Ethereum -->
+  <div class="modal-overlay" *ngIf="modalState === 'ethereum-wallets'" (click)="closeWalletOptions()">
+    <div class="wallet-modal ethereum-wallets-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <button class="back-button" (click)="backToWalletTypes()">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <h2>Conecta una Wallet</h2>
+        <button class="close-button" (click)="closeWalletOptions()">×</button>
+      </div>
+      
+      <div class="modal-content">
+        <div class="wallet-options-container">
+          <div class="wallet-options">
+            <h3>Popular</h3>
+            <div class="wallet-option" disabled>
+              <div class="wallet-icon rainbow-icon">
+                <img width="40" height="40" src="assets/1200x630wa.png" alt="Rainbow">
+              </div>
+              <span>Rainbow</span>
+            </div>
+            
+            <div class="wallet-option" disabled>
+              <div class="wallet-icon coinbase-icon">
+                <img width="40" height="40" src="assets/1200x630wa (1).png" alt="Coinbase Wallet">
+              </div>
+              <span>Coinbase Wallet</span>
+            </div>
+            
+            <div class="wallet-option" (click)="selectWallet('metamask')">
+              <div class="wallet-icon metamask-icon">
+                <img width="40" height="40" src="/assets/MetaMask_Fox.svg.png" alt="MetaMask">
+              </div>
+              <span>MetaMask</span>
+            </div>
+            
+            <div class="wallet-option" disabled>
+              <div class="wallet-icon walletconnect-icon">
+                <img width="40" height="40" src="assets/icon.png" alt="WalletConnect">
+              </div>
+              <span>WalletConnect</span>
+            </div>
+            
+            <h3>Otras</h3>
+            <div class="wallet-option" disabled>
+              <div class="wallet-icon trust-icon">
+                <img width="40" height="40" src="assets/channels4_profile.jpg" alt="Trust Wallet">
+              </div>
+              <span>Trust Wallet</span>
+            </div>
+            
+            <div class="wallet-option" disabled>
+              <div class="wallet-icon argent-icon">
+                <img width="40" height="40" src="assets/unnamed.png" alt="Argent">
+              </div>
+              <span>Argent</span>
+            </div>
+          </div>
+          
+          <div class="wallet-info">
+            <h3>¿Qué es una Wallet?</h3>
+            
+            <div class="info-card">
+              <div class="info-icon">
+                <i class="fas fa-home"></i>
+              </div>
+              <div class="info-content">
+                <h4>Un hogar para tus activos digitales</h4>
+                <p>Las wallets se utilizan para enviar, recibir, almacenar y mostrar activos digitales como Ethereum y NFTs.</p>
+              </div>
+            </div>
+            
+            <div class="info-card">
+              <div class="info-icon">
+                <i class="fas fa-sign-in-alt"></i>
+              </div>
+              <div class="info-content">
+                <h4>Una nueva forma de iniciar sesión</h4>
+                <p>En lugar de crear nuevas cuentas y contraseñas en cada sitio web, simplemente conecta tu wallet.</p>
+              </div>
+            </div>
+            
+            <a href="https://metamask.io/download/" target="_blank" class="get-wallet-button">
+              Obtener una Wallet
+            </a>
+            
+            <a href="#" class="learn-more-link">Aprender más</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button (click)="continueWithoutWallet()" class="secondary-button">
+          Continuar sin conectar wallet
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal de Conexión a MetaMask -->
+  <div class="modal-overlay" *ngIf="modalState === 'connecting-metamask'" (click)="closeWalletOptions()">
+    <div class="connecting-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <button class="back-button" (click)="backToWalletTypes()">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <h2>Conectando a MetaMask</h2>
+        <button class="close-button" (click)="closeWalletOptions()">×</button>
+      </div>
+      
+      <div class="modal-content text-center">
+        <div class="metamask-logo">
+          <img src="assets/MetaMask_Fox.svg.png" alt="MetaMask Fox" class="metamask-fox">
+        </div>
+        
+        <p *ngIf="isConnecting">Abriendo MetaMask...</p>
+        <p *ngIf="!isConnecting && errorMessage">{{ errorMessage }}</p>
+        
+        <div class="loading-spinner" *ngIf="isConnecting"></div>
+        
+        <p class="metamask-instruction">
+          Por favor, confirma la conexión en la extensión de MetaMask
+        </p>
+      </div>
+      
+      <div class="modal-footer">
+        <button (click)="connectMetaMask()" class="login-button" *ngIf="!isConnecting">
+          Reintentar conexión
+        </button>
+        <button (click)="continueWithoutWallet()" class="secondary-button" style="background: transparent;">
+          Continuar sin conectar wallet
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,485 @@
+/* Estilos para el componente de contactos con diseño tipo teléfono */
+.contacts-container {
+    padding: 20px;
+    background-color: #1a1431;
+    background-image:
+        radial-gradient(at 50% 0%, rgba(255, 94, 58, 0.08) 0px, transparent 50%),
+        radial-gradient(at 90% 90%, rgba(116, 58, 213, 0.08) 0px, transparent 50%);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    color: #fff;
+}
+
+/* Estilos para el encabezado de contactos */
+.contacts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #393953;
+}
+
+.contacts-header h2 {
+    margin: 0;
+    color: #fff;
+    font-weight: 600;
+}
+
+.contacts-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Estilos para la búsqueda */
+.search-box {
+    position: relative;
+}
+
+.search-input {
+    padding: 10px 15px;
+    border: 1px solid #393953;
+    border-radius: 20px;
+    min-width: 220px;
+    font-size: 14px;
+    background-color: #2a2a40;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #ff6b4a;
+    box-shadow: 0 0 0 2px rgba(255, 107, 74, 0.2);
+}
+
+.search-input::placeholder {
+    color: #8a8aa3;
+}
+
+/* Estilos para botones de acción */
+.add-contact-btn {
+    padding: 10px 16px;
+    background-color: #ff6b4a;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-contact-btn:hover {
+    background-color: #ff5a36;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 107, 74, 0.3);
+}
+
+.add-contact-btn.active {
+    background-color: #f44336;
+}
+
+/* Estilos para mensajes de notificación */
+.error-message,
+.success-message {
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.error-message {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.success-message {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #4CAF50;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+/* Estilos para formularios */
+.contact-form {
+    background-color: #2a2a40;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-bottom: 20px;
+    border: 1px solid #393953;
+}
+
+.contact-form h3 {
+    margin-top: 0;
+    color: #fff;
+    font-size: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #393953;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #b1b1cc;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #393953;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #222236;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #ff6b4a;
+    box-shadow: 0 0 0 2px rgba(255, 107, 74, 0.2);
+}
+
+.form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Estilos para botones de formulario */
+.save-btn,
+.cancel-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.save-btn {
+    background-color: #ff6b4a;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #ff5a36;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 107, 74, 0.3);
+}
+
+.cancel-btn {
+    background-color: #2a2a40;
+    color: #fff;
+    border: 1px solid #393953;
+}
+
+.cancel-btn:hover {
+    background-color: #393953;
+}
+
+/* Estilos para la lista de contactos */
+.contacts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.contact-card {
+    background-color: #2a2a40;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+    border: 1px solid #393953;
+}
+
+.contact-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: #ff6b4a;
+}
+
+.contact-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #ff6b4a;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+    margin-right: 15px;
+}
+
+.contact-info {
+    flex: 1;
+}
+
+.contact-info-header {
+    display: flex;
+    align-items: center;
+}
+
+.contact-name {
+    margin: 0;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.contact-address {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    background-color: #222236;
+    padding: 8px;
+    border-radius: 6px;
+}
+
+.address-text {
+    font-family: monospace;
+    font-size: 14px;
+    color: #b1b1cc;
+    margin-right: 10px;
+    flex: 1;
+    word-break: break-all;
+}
+
+.copy-btn {
+    background-color: transparent;
+    border: none;
+    color: #ff6b4a;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 5px;
+    transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+    color: #ff5a36;
+    text-decoration: underline;
+}
+
+.contact-notes {
+    background-color: #222236;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #b1b1cc;
+    margin-top: 10px;
+    border-left: 3px solid #ff6b4a;
+}
+
+/* Estilos para acciones de contacto */
+.contact-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #b1b1cc;
+}
+
+.action-btn:hover {
+    background-color: #393953;
+    color: #fff;
+}
+
+.action-btn.edit {
+    color: #FFC107;
+}
+
+.action-btn.delete {
+    color: #F44336;
+}
+
+.action-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.edit-btn,
+.delete-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.edit-btn {
+    background-color: #FFC107;
+    color: #333;
+}
+
+.edit-btn:hover {
+    background-color: #FFB300;
+}
+
+.delete-btn {
+    background-color: #F44336;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #E53935;
+}
+
+/* Estilos para mensaje de no contactos */
+.no-contacts {
+    text-align: center;
+    padding: 30px;
+    background-color: #2a2a40;
+    border-radius: 12px;
+    border: 1px dashed #393953;
+    color: #b1b1cc;
+    margin-top: 20px;
+}
+
+/* Estilos para contacto expandido */
+.expanded-card {
+    max-height: 1000px;
+    transition: max-height 0.3s ease;
+}
+
+.collapsed-card {
+    max-height: 80px;
+    overflow: hidden;
+}
+
+.expand-btn {
+    background-color: transparent;
+    border: none;
+    color: #ff6b4a;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.expand-btn:hover {
+    text-decoration: underline;
+}
+
+/* Media queries para diseño responsive */
+@media (max-width: 992px) {
+    .contacts-list {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 768px) {
+    .contacts-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .contacts-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .search-input {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .add-contact-btn {
+        width: 100%;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .save-btn, .cancel-btn {
+        width: 100%;
+    }
+
+    .contact-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .contact-actions {
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .contacts-container {
+        padding: 15px;
+    }
+
+    .contact-card {
+        padding: 12px;
+    }
+
+    .contact-address {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .address-text {
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+
+    .copy-btn {
+        align-self: flex-end;
+    }
+
+    .contact-actions {
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+
+    .contact-form {
+        padding: 15px;
+    }
+}

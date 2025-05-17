@@ -1,0 +1,70 @@
+<div class="transaction-history-container">
+    <h3></h3>
+
+    <div class="transaction-controls">
+        <button (click)="loadTransactions()" class="refresh-button">
+            <i class="icon refresh-icon"></i>
+            Actualizar
+        </button>
+    </div>
+
+    <div *ngIf="loading" class="loading-container fade-in">
+        <div class="loading-spinner"></div>
+        <p>Cargando transacciones...</p>
+    </div>
+
+    <div *ngIf="error" class="error-container fade-in">
+        <p class="error-message">{{ error }}</p>
+        <button (click)="retry()" class="retry-button">Reintentar</button>
+    </div>
+
+    <div *ngIf="!loading && !error" class="transactions-list fade-in">
+        <div *ngIf="transactions.length === 0" class="no-transactions">
+            <p>No se encontraron transacciones para esta cuenta en la red actual.</p>
+        </div>
+
+        <div *ngFor="let tx of transactions" class="transaction-item" [ngClass]="{'outgoing': tx.isOutgoing}">
+            <div class="transaction-header">
+                <div class="transaction-type">
+                    <span class="type-label" [ngClass]="{'received': !tx.isOutgoing}">
+                        {{ tx.isOutgoing ? 'Enviado' : 'Recibido' }}
+                    </span>
+                </div>
+                <div class="transaction-status" [ngClass]="getTransactionStatusClass(tx.status)">
+                    {{ tx.status === 'confirmed' ? 'Confirmada' : tx.status === 'failed' ? 'Fallida' : 'Pendiente' }}
+                </div>
+            </div>
+
+            <div class="transaction-details">
+                <div class="transaction-addresses">
+                    <div class="address-row">
+                        <span class="address-label">De:</span>
+                        <span class="address-value">{{ tx.from }}</span>
+                    </div>
+                    <div class="address-row">
+                        <span class="address-label">Para:</span>
+                        <span class="address-value">{{ tx.to }}</span>
+                    </div>
+                </div>
+
+                <div class="transaction-info">
+                    <div class="amount">
+                        <span [ngClass]="{'negative': tx.isOutgoing, 'positive': !tx.isOutgoing}">
+                            {{ (tx.isOutgoing ? '-' : '+') + formatValue(tx.value) }} {{ etherService.getNetworkCurrency() }}
+                        </span>
+                    </div>
+                    <div class="timestamp">
+                        {{ formatTimestamp(tx.timestamp) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="transaction-footer">
+                <a [href]="getTransactionLink(tx.hash)" target="_blank" class="view-on-explorer">
+                    Ver en Explorador
+                </a>
+                <span class="transaction-hash">{{ tx.hash.slice(0, 10) }}...{{ tx.hash.slice(-8) }}</span>
+            </div>
+        </div>
+    </div>
+</div>

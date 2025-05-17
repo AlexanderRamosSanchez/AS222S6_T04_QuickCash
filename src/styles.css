@@ -1,0 +1,98 @@
+/* src/styles.css */
+
+/* Estilos para importar fuentes Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Estilos globales */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+  
+html, body {
+    height: 100%;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: #f1f5f9;
+    color: #1e293b;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Estilos de formularios globales */
+input, button, select, textarea {
+    font-family: inherit;
+}
+  
+button {
+    cursor: pointer;
+}
+  
+/* Utilidades generales */
+.text-center {
+    text-align: center;
+}
+  
+.mt-4 {
+    margin-top: 1rem;
+}
+  
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+/* Utilidades responsive */
+.hidden-mobile {
+    display: block;
+}
+
+.visible-mobile {
+    display: none;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+  
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Media queries globales */
+@media (max-width: 992px) {
+    .container {
+        width: 100%;
+        padding: 0 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hidden-mobile {
+        display: none !important;
+    }
+    
+    .visible-mobile {
+        display: block !important;
+    }
+    
+    .text-center-mobile {
+        text-align: center !important;
+    }
+    
+    .mt-4-mobile {
+        margin-top: 1rem !important;
+    }
+}
+
+/* Mejora de elementos de formulario en móvil */
+@media (max-width: 480px) {
+    input, button, select, textarea {
+        font-size: 16px !important; /* Evita el zoom en iOS al enfocar */
+    }
+}

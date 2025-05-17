@@ -1,0 +1,148 @@
+<!-- src/app/dapp/components/dashboard/dashboard.component.html -->
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div class="logo">
+            <h1>QuickCash DApp</h1>
+        </div>
+
+        <div *ngIf="authService.currentUser()" class="user-info">
+            <span class="username">{{ authService.currentUser()?.username }}</span>
+            <button (click)="logout()" class="logout-button">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <div class="dashboard-content">
+        <div class="sidebar">
+            <div class="wallet-section">
+                <app-wallet></app-wallet>
+            </div>
+
+            <nav class="navigation">
+                <div class="nav-buttons">
+                    <button [class.active]="selectedTab === 'overview'" (click)="selectTab('overview')" class="nav-button">
+                        <i class="icon dashboard-icon"></i>
+                        <span>Resumen</span>
+                    </button>
+
+                    <button [class.active]="selectedTab === 'send'" (click)="selectTab('send')"
+                        [disabled]="!etherService.isConnected()" class="nav-button">
+                        <i class="icon send-icon"></i>
+                        <span>Enviar</span>
+                    </button>
+
+                    <button [class.active]="selectedTab === 'contacts'" (click)="selectTab('contacts')"
+                        [disabled]="!etherService.isConnected()" class="nav-button">
+                        <i class="icon contacts-icon"></i>
+                        <span>Contactos</span>
+                    </button>
+
+                    <button [class.active]="selectedTab === 'transactions'" (click)="selectTab('transactions')"
+                        [disabled]="!etherService.isConnected()" class="nav-button">
+                        <i class="icon history-icon"></i>
+                        <span>Transacciones</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+
+        <main class="main-content">
+            <div *ngIf="selectedTab === 'overview'" class="overview-tab fade-in">
+                <h2>Resumen de la cuenta</h2>
+
+                <div *ngIf="etherService.isConnected()" class="account-summary">
+                    <div class="balance-card">
+                        <div class="balance-header">Saldo Total</div>
+                        <div class="balance-amount">
+                            {{ etherService.balance() }} {{ etherService.getNetworkCurrency() }}
+                        </div>
+                    </div>
+
+                    <app-network-display></app-network-display>
+
+                    <div class="account-details">
+                        <h3>Detalles de la cuenta</h3>
+                        <div class="detail-item">
+                            <span class="label">Cuenta:</span>
+                            <span class="value">{{ etherService.currentAccount() }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Red:</span>
+                            <span class="value">{{ etherService.getNetworkName() }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Nueva sección de integrantes -->
+                    <div class="team-members">
+                        <h3>Integrantes</h3>
+                        <div class="members-container">
+                            <div class="member-card">
+                                <div class="member-photo">
+                                    <img src="assets/integrantes/Diego_IMG.png" alt="Diego Ramos Sanchez">
+                                </div>
+                                <div class="member-info">
+                                    <h4>Diego Alexander RAMOS SANCHEZ</h4>
+                                </div>
+                            </div>
+                            <div class="member-card">
+                                <div class="member-photo">
+                                    <img src="assets/integrantes/Alexa_IMG.png" alt="Alexa Rejas">
+                                </div>
+                                <div class="member-info">
+                                    <h4>Alexa Cristhelly REJAS CARRASCO</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="!etherService.isConnected()" class="not-connected-message">
+                    <p>Conecta tu wallet para ver el resumen de tu cuenta</p>
+                    <app-wallet></app-wallet>
+                </div>
+            </div>
+
+            <div *ngIf="selectedTab === 'send'" class="send-tab fade-in">
+                <h2>Enviar Fondos</h2>
+
+                <div *ngIf="etherService.isConnected()">
+                    <app-send-transaction></app-send-transaction>
+                </div>
+
+                <div *ngIf="!etherService.isConnected()" class="not-connected-message">
+                    <p>Conecta tu wallet para enviar fondos</p>
+                    <app-wallet></app-wallet>
+                </div>
+            </div>
+
+            <div *ngIf="selectedTab === 'contacts'" class="contacts-tab fade-in">
+                <h2>Mis Contactos</h2>
+
+                <div *ngIf="etherService.isConnected()">
+                    <app-contacts></app-contacts>
+                </div>
+
+                <div *ngIf="!etherService.isConnected()" class="not-connected-message">
+                    <p>Conecta tu wallet para gestionar tus contactos</p>
+                    <app-wallet></app-wallet>
+                </div>
+            </div>
+
+            <div *ngIf="selectedTab === 'transactions'" class="transactions-tab fade-in">
+                <h2>Historial de Transacciones</h2>
+
+                <div *ngIf="etherService.isConnected()">
+                    <app-transaction-history></app-transaction-history>
+                </div>
+
+                <div *ngIf="!etherService.isConnected()" class="not-connected-message">
+                    <p>Conecta tu wallet para ver tu historial de transacciones</p>
+                    <app-wallet></app-wallet>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="dashboard-footer">
+        <p>&copy; 2025 QuickCash DApp. Todos los derechos reservados.</p>
+    </footer>
+</div>

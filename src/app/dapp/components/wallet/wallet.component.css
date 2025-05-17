@@ -1,0 +1,254 @@
+/* src/app/dapp/components/wallet/wallet.component.css */
+.wallet-connect {
+    background: linear-gradient(145deg, #3a2a50 0%, #332347 100%);
+    border-radius: 1rem;
+    padding: 1.75rem;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.wallet-connect:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+}
+
+.metamask-icon {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.metamask-icon img {
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.metamask-icon img:hover {
+    transform: scale(1.05);
+}
+
+h3 {
+    color: #fff;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, #ff5e3a, rgba(255, 94, 58, 0.3));
+    border-radius: 2px;
+}
+
+p {
+    color: #c4b8d8;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.install-button, 
+.connect-button {
+    background: linear-gradient(135deg, #ff5e3a 0%, #ff2d20 100%);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(255, 46, 46, 0.25);
+    position: relative;
+    overflow: hidden;
+}
+
+.install-button::before,
+.connect-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.5s ease;
+}
+
+.install-button:hover,
+.connect-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 46, 46, 0.35);
+}
+
+.install-button:hover::before,
+.connect-button:hover::before {
+    left: 100%;
+}
+
+.install-button:active,
+.connect-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 8px rgba(255, 46, 46, 0.25);
+}
+
+.install-button:disabled,
+.connect-button:disabled {
+    background: linear-gradient(135deg, rgba(255, 94, 58, 0.5) 0%, rgba(255, 45, 32, 0.5) 100%);
+    cursor: not-allowed;
+    transform: translateY(0);
+}
+
+.error-message {
+    color: #ff4757;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    background-color: rgba(255, 71, 87, 0.1);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid rgba(255, 71, 87, 0.3);
+}
+
+.connected-info {
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    background: linear-gradient(145deg, #2a1b3d 0%, #231634 100%);
+    border: 1px solid rgba(255, 94, 58, 0.2);
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.account {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1.125rem;
+    color: #ff5e3a;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    border: 1px solid rgba(255, 94, 58, 0.2);
+    display: inline-block;
+    word-break: break-all;
+    max-width: 100%;
+}
+
+.network-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    background: linear-gradient(135deg, #ff5e3a 0%, #ff2d20 100%);
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 500;
+    box-shadow: 0 4px 8px rgba(255, 46, 46, 0.25);
+}
+
+/* Account details section */
+.account-details {
+    margin: 1rem 0;
+    width: 100%;
+}
+
+.account-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.account-label {
+    min-width: 80px;
+    text-align: left;
+    font-weight: 500;
+    color: #c4b8d8;
+    padding-right: 0.5rem;
+}
+
+.account-value {
+    text-align: left;
+    font-family: 'Roboto Mono', monospace;
+    color: #ff5e3a;
+    font-size: 0.875rem;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    flex: 1;
+}
+
+/* Media queries para responsive */
+@media (max-width: 768px) {
+    .wallet-connect {
+        padding: 1.25rem;
+    }
+
+    h3 {
+        font-size: 1.125rem;
+    }
+
+    p {
+        font-size: 0.875rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .install-button,
+    .connect-button {
+        padding: 0.625rem 1.25rem;
+        font-size: 0.875rem;
+    }
+
+    .metamask-icon img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .account-label {
+        min-width: 70px;
+        font-size: 0.8rem;
+    }
+    
+    .account-value {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .wallet-connect {
+        padding: 1rem;
+    }
+
+    h3 {
+        font-size: 1rem;
+    }
+
+    .account {
+        font-size: 0.875rem;
+        padding: 0.375rem 0.5rem;
+    }
+
+    .network-badge {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+    }
+
+    .metamask-icon img {
+        width: 50px;
+        height: 50px;
+    }
+}
