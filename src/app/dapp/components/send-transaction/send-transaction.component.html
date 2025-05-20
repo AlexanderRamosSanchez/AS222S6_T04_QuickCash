@@ -4,26 +4,50 @@
     <div class="transaction-toggle">
       <button
         [class.active]="!useContract"
-        (click)="useContract = false"
+        (click)="toggleContractUse()"
         class="toggle-button">
         Envío Directo
       </button>
       <button
         [class.active]="useContract"
-        (click)="useContract = true"
+        (click)="toggleContractUse()"
         class="toggle-button">
         Usar Contrato
       </button>
     </div>
     
-    <div *ngIf="useContract" class="form-group">
-      <label for="contract-address">Dirección del Contrato</label>
-      <input
-        type="text"
-        id="contract-address"
-        [(ngModel)]="contractAddress"
-        placeholder="0x..."
-        [disabled]="isProcessing">
+    <div *ngIf="useContract" class="contract-section">
+      <div class="form-group">
+        <label for="contract-address">Dirección del Contrato</label>
+        <div class="input-with-button">
+          <input
+            type="text"
+            id="contract-address"
+            [(ngModel)]="contractAddress"
+            placeholder="0x..."
+            [disabled]="isProcessing || isContractInitialized">
+          <button
+            *ngIf="!isContractInitialized && contractAddress"
+            (click)="initializeContract()"
+            [disabled]="isProcessing"
+            class="action-button">
+            Inicializar
+          </button>
+        </div>
+      </div>
+      
+      <div *ngIf="isContractInitialized" class="contract-info">
+        <div class="contract-balance">
+          <span class="label">Balance del contrato:</span>
+          <span class="value">{{ contractBalance }} {{ etherService.getNetworkCurrency() }}</span>
+        </div>
+        <button
+          (click)="depositToContract()"
+          [disabled]="isProcessing || !amount"
+          class="deposit-button">
+          Depositar
+        </button>
+      </div>
     </div>
     
     <div class="form-group">
@@ -34,7 +58,8 @@
         <select 
           [(ngModel)]="selectedContactId" 
           (change)="selectContact(selectedContactId)"
-          class="contact-select">
+          class="contact-select"
+          [disabled]="isProcessing">
           <option value="">Seleccionar un contacto</option>
           <option *ngFor="let contact of contacts" [value]="contact.id">
             {{ contact.name }} ({{ shortenAddress(contact.address) }})
@@ -42,7 +67,8 @@
         </select>
         <button 
           (click)="toggleAddContact()" 
-          class="add-contact-btn">
+          class="add-contact-btn"
+          [disabled]="isProcessing">
           {{ showAddContact ? 'Cancelar' : 'Nuevo' }}
         </button>
       </div>
@@ -73,8 +99,7 @@
           type="text" 
           id="contact-address" 
           [(ngModel)]="newContact.address" 
-          placeholder="0x..."
-          [value]="newContact.address || recipient">
+          placeholder="0x...">
       </div>
       <div class="form-group">
         <label for="contact-notes">Notas (opcional)</label>
@@ -111,30 +136,59 @@
     
     <button
       (click)="sendTransaction()"
-      [disabled]="isProcessing || !recipient || !amount"
+      [disabled]="isProcessing || !recipient || !amount || (useContract && !isContractInitialized)"
       class="send-button">
-      {{ isProcessing ? 'Enviando...' : 'Enviar' }}
+      <span *ngIf="!isProcessing">Enviar {{ useContract ? 'vía Contrato' : 'Directamente' }}</span>
+      <span *ngIf="isProcessing" class="processing">
+        <span class="spinner"></span>
+        Procesando...
+      </span>
     </button>
   </div>
   
   <div class="transaction-info">
     <h3>¿Qué es la función sendTransaction?</h3>
     <p>
-      Esta función permite enviar ETH o tokens a otra dirección. Puedes elegir entre:
+      Esta función permite enviar {{ etherService.getNetworkCurrency() }} a otra dirección. Puedes elegir entre:
     </p>
     <ul>
-      <li><strong>Envío Directo:</strong> Transfiere ETH directamente a la dirección del destinatario.</li>
-      <li><strong>Usar Contrato:</strong> Utiliza el contrato inteligente para realizar la transferencia, lo que puede incluir lógica adicional.</li>
+      <li><strong>Envío Directo:</strong> Transfiere {{ etherService.getNetworkCurrency() }} directamente a la dirección del destinatario.</li>
+      <li><strong>Usar Contrato:</strong> Utiliza un contrato inteligente para realizar la transferencia, lo que puede incluir lógica adicional y seguridad.</li>
     </ul>
-    <p>
-      Los campos requeridos son:
-    </p>
-    <ul>
-      <li><strong>Destinatario:</strong> La dirección de wallet que recibirá los fondos. Puedes seleccionar un contacto existente o añadir uno nuevo.</li>
-      <li><strong>Cantidad:</strong> El monto a enviar en {{ etherService.getNetworkCurrency() }}.</li>
-    </ul>
-    <p>
-      <strong>Nota:</strong> Las transacciones en blockchain son irreversibles. Verifica cuidadosamente la dirección del destinatario antes de enviar.
-    </p>
+    
+    <div *ngIf="useContract" class="contract-explainer">
+      <h4>Modo Contrato</h4>
+      <p>
+        Al usar el contrato, puedes:
+      </p>
+      <ul>
+        <li><strong>Inicializar:</strong> Conectar con un contrato existente.</li>
+        <li><strong>Depositar:</strong> Añadir fondos al contrato para usar más tarde.</li>
+        <li><strong>Enviar:</strong> Transferir fondos desde el contrato al destinatario.</li>
+      </ul>
+      <p>
+        El contrato proporciona una capa adicional de seguridad y funcionalidad.
+      </p>
+    </div>
+    
+    <div class="contacts-explainer">
+      <h4>Gestión de Contactos</h4>
+      <p>
+        Para facilitar transacciones recurrentes, puedes:
+      </p>
+      <ul>
+        <li><strong>Seleccionar contactos:</strong> Elige entre tus contactos guardados.</li>
+        <li><strong>Añadir contactos:</strong> Guarda nuevas direcciones con nombres y notas.</li>
+      </ul>
+    </div>
+    
+    <div class="warning">
+      <strong>Importante:</strong> Las transacciones en blockchain son irreversibles. Verifica cuidadosamente la dirección del destinatario y el monto antes de enviar.
+    </div>
+    
+    <div class="network-info">
+      <p>Red actual: <strong>{{ etherService.getNetworkName() }}</strong></p>
+      <p>Moneda: <strong>{{ etherService.getNetworkCurrency() }}</strong></p>
+    </div>
   </div>
 </div>

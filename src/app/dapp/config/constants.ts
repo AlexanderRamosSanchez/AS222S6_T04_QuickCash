@@ -28,7 +28,7 @@ export const NETWORKS = {
         name: 'Etherum Holesky',
         chainId: 17000,
         symbol: 'ETH',
-        blockExplorer: ''
+        blockExplorer: 'https://holesky.etherscan.io'
     }
 };
 

@@ -1,5 +1,5 @@
 // src/app/dapp/components/send-transaction/send-transaction.component.ts
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EtherService } from '../../services/ether.service';
@@ -14,19 +14,23 @@ import { ethers } from 'ethers';
   templateUrl: './send-transaction.component.html',
   styleUrls: ['./send-transaction.component.css']
 })
-export class SendTransactionComponent {
+export class SendTransactionComponent implements OnInit {
   recipient: string = '';
   amount: string = '';
   errorMessage: string = '';
   successMessage: string = '';
   isProcessing: boolean = false;
   useContract: boolean = false;
-  contractAddress: string = '';
+  contractAddress: string = '0x9dC22Db88B2F1212DD2F2bD53aBE05bC7bCc4Baa'; // Dirección predeterminada
   
   // Nuevas propiedades para contactos
   contacts: Contact[] = [];
   selectedContactId: string = '';
   showAddContact: boolean = false;
+  
+  // Nuevas propiedades para el contrato
+  isContractInitialized: boolean = false;
+  contractBalance: string = '0';
   
   newContact = {
     name: '',
@@ -39,6 +43,14 @@ export class SendTransactionComponent {
     public contactService: ContactService
   ) {
     this.loadContacts();
+  }
+  
+  ngOnInit(): void {
+    // No es necesario obtener contractAddress si ya está inicializado
+    if (this.etherService.contractAddress()) {
+      this.isContractInitialized = true;
+      this.contractBalance = this.etherService.getContractBalanceFormatted();
+    }
   }
   
   loadContacts(): void {
@@ -61,9 +73,7 @@ export class SendTransactionComponent {
     if (!this.showAddContact) {
       this.resetNewContact();
     } else if (this.recipient && ethers.utils.isAddress(this.recipient)) {
-      // Si hay una dirección válida en el campo de destinatario, 
-      // la usamos para pre-llenar el formulario de contacto
-      this.newContact.address = this.recipient;
+      this.newContact.address = this.recipient; // Pre-llenar dirección
     }
   }
   
@@ -76,25 +86,21 @@ export class SendTransactionComponent {
   }
   
   addContact(): void {
-    // Validar nombre
     if (!this.newContact.name.trim()) {
       this.errorMessage = 'El nombre es obligatorio';
       return;
     }
     
-    // Validar que el nombre no exista
     if (this.contactService.nameExists(this.newContact.name)) {
       this.errorMessage = 'Ya existe un contacto con este nombre';
       return;
     }
     
-    // Validar dirección
     if (!ethers.utils.isAddress(this.newContact.address)) {
       this.errorMessage = 'La dirección no es válida';
       return;
     }
     
-    // Validar que la dirección no exista
     if (this.contactService.addressExists(this.newContact.address)) {
       this.errorMessage = 'Ya existe un contacto con esta dirección';
       return;
@@ -114,17 +120,39 @@ export class SendTransactionComponent {
     this.showAddContact = false;
   }
 
+  async initializeContract(): Promise<void> {
+    if (!ethers.utils.isAddress(this.contractAddress)) {
+      this.errorMessage = 'La dirección del contrato no es válida';
+      return;
+    }
+    
+    this.isProcessing = true;
+    try {
+      const success = await this.etherService.initContract(this.contractAddress);
+      if (success) {
+        this.isContractInitialized = true;
+        this.contractBalance = this.etherService.getContractBalanceFormatted();
+        this.successMessage = 'Contrato inicializado correctamente';
+      } else {
+        this.errorMessage = 'Error al inicializar el contrato';
+      }
+    } catch (error) {
+      console.error('Error al inicializar contrato:', error);
+      this.errorMessage = 'Error al inicializar el contrato';
+    } finally {
+      this.isProcessing = false;
+    }
+  }
+
   async sendTransaction(): Promise<void> {
     this.errorMessage = '';
     this.successMessage = '';
     
-    // Validar dirección del destinatario
     if (!ethers.utils.isAddress(this.recipient)) {
       this.errorMessage = 'La dirección del destinatario no es válida';
       return;
     }
     
-    // Validar monto
     if (!this.amount || isNaN(Number(this.amount)) || Number(this.amount) <= 0) {
       this.errorMessage = 'Por favor ingresa un monto válido';
       return;
@@ -136,30 +164,32 @@ export class SendTransactionComponent {
       let txHash: string | null;
       
       if (this.useContract) {
-        // Verificar si hay una dirección de contrato
         if (!this.contractAddress || !ethers.utils.isAddress(this.contractAddress)) {
           this.errorMessage = 'La dirección del contrato no es válida';
           this.isProcessing = false;
           return;
         }
         
-        // Inicializar el contrato si es necesario
-        await this.etherService.initContract(this.contractAddress);
+        if (!this.isContractInitialized) {
+          const initialized = await this.etherService.initContract(this.contractAddress);
+          if (!initialized) {
+            this.errorMessage = 'Error al inicializar el contrato';
+            this.isProcessing = false;
+            return;
+          }
+          this.isContractInitialized = true;
+        }
         
-        // Enviar transacción a través del contrato
         txHash = await this.etherService.sendContractTransaction(this.recipient, this.amount);
+        this.contractBalance = this.etherService.getContractBalanceFormatted();
       } else {
-        // Enviar transacción directa
         txHash = await this.etherService.sendTransaction(this.recipient, this.amount);
       }
       
       if (txHash) {
         this.successMessage = `¡Transacción enviada! Hash: ${txHash}`;
         this.amount = '';
-        // No reseteamos el recipient para facilitar transacciones repetidas
         
-        // Si es una dirección que no está en la lista de contactos, 
-        // sugerir añadirla como contacto
         if (!this.contactService.addressExists(this.recipient)) {
           const addContact = confirm('¿Deseas guardar esta dirección como un nuevo contacto?');
           if (addContact) {
@@ -181,9 +211,52 @@ export class SendTransactionComponent {
     }
   }
 
+  async depositToContract(): Promise<void> {
+    if (!this.amount || isNaN(Number(this.amount)) || Number(this.amount) <= 0) {
+      this.errorMessage = 'Por favor ingresa un monto válido';
+      return;
+    }
+
+    if (!this.contractAddress || !ethers.utils.isAddress(this.contractAddress)) {
+      this.errorMessage = 'La dirección del contrato no es válida';
+      return;
+    }
+
+    if (!this.isContractInitialized) {
+      const initialized = await this.etherService.initContract(this.contractAddress);
+      if (!initialized) {
+        this.errorMessage = 'Error al inicializar el contrato';
+        return;
+      }
+      this.isContractInitialized = true;
+    }
+
+    this.isProcessing = true;
+    try {
+      const txHash = await this.etherService.depositToContract(this.amount);
+      if (txHash) {
+        this.successMessage = `¡Depósito realizado! Hash: ${txHash}`;
+        this.amount = '';
+        this.contractBalance = this.etherService.getContractBalanceFormatted();
+      } else {
+        this.errorMessage = 'Error al realizar el depósito';
+      }
+    } catch (error: unknown) {
+      console.error('Error en el depósito:', error);
+      if (error instanceof Error) {
+        this.errorMessage = `Error al realizar el depósito: ${error.message}`;
+      } else {
+        this.errorMessage = 'Error al realizar el depósito: Error desconocido';
+      }
+    } finally {
+      this.isProcessing = false;
+    }
+  }
+
   toggleContractUse(): void {
     this.useContract = !this.useContract;
     this.errorMessage = '';
+    this.successMessage = '';
   }
   
   shortenAddress(address: string): string {

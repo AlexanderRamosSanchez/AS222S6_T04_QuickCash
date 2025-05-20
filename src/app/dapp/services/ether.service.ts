@@ -9,6 +9,8 @@ import { Transaction } from '../interfaces/transaction.interface';
 // Define tu tipo de contrato
 interface TransactionContract extends ethers.Contract {
   sendTransaction(recipient: string, amount: ethers.BigNumber, overrides?: ethers.CallOverrides): Promise<ethers.ContractTransaction>;
+  deposit(overrides?: ethers.CallOverrides): Promise<ethers.ContractTransaction>;
+  getContractBalance(overrides?: ethers.CallOverrides): Promise<ethers.BigNumber>;
 }
 
 @Injectable({
@@ -26,6 +28,7 @@ export class EtherService {
   balance = signal<string>('0');
   network = signal<Network | null>(null);
   contractAddress = signal<string>('');
+  contractBalance = signal<string>('0');
   transactions = signal<Transaction[]>([]);
   isLoadingTransactions = signal<boolean>(false);
 
@@ -54,6 +57,11 @@ export class EtherService {
         // Actualizar los detalles de la red y el balance
         await this.updateNetworkDetails();
         await this.updateBalance();
+
+        // Si hay un contrato inicializado, actualizar su balance
+        if (this.contract) {
+          await this.updateContractBalance();
+        }
 
         // Resetear las transacciones al cambiar de red
         this.transactions.set([]);
@@ -119,6 +127,8 @@ export class EtherService {
     this.currentAccount.set('');
     this.balance.set('0');
     this.network.set(null);
+    this.contractAddress.set('');
+    this.contractBalance.set('0');
     this.provider = null;
     this.signer = null;
     this.contract = null;
@@ -131,6 +141,11 @@ export class EtherService {
 
     // Reset transactions when account changes
     this.transactions.set([]);
+
+    // Si hay un contrato inicializado, actualizar su balance
+    if (this.contract) {
+      await this.updateContractBalance();
+    }
   }
 
   private async updateBalance(): Promise<void> {
@@ -146,6 +161,18 @@ export class EtherService {
           setTimeout(() => this.updateBalance(), 1000);
         }
       }
+    }
+  }
+
+  private async updateContractBalance(): Promise<void> {
+    if (!this.contract) return;
+
+    try {
+      const balance = await this.contract.getContractBalance();
+      this.contractBalance.set(ethers.utils.formatEther(balance));
+    } catch (error) {
+      console.error('Error al obtener el saldo del contrato:', error);
+      this.contractBalance.set('0');
     }
   }
 
@@ -216,6 +243,11 @@ export class EtherService {
       await this.updateNetworkDetails();
       await this.updateBalance();
 
+      // Si hay un contrato inicializado, actualizarlo en la nueva red
+      if (this.contractAddress()) {
+        await this.initContract(this.contractAddress());
+      }
+
       // Resetear las transacciones al cambiar de red
       this.transactions.set([]);
 
@@ -243,6 +275,11 @@ export class EtherService {
 
           await this.updateNetworkDetails();
           await this.updateBalance();
+
+          // Si hay un contrato inicializado, actualizarlo en la nueva red
+          if (this.contractAddress()) {
+            await this.initContract(this.contractAddress());
+          }
 
           // Resetear las transacciones al cambiar de red
           this.transactions.set([]);
@@ -332,6 +369,10 @@ export class EtherService {
     try {
       this.contract = new ethers.Contract(contractAddress, TransactionABI, this.signer) as TransactionContract;
       this.contractAddress.set(contractAddress);
+      
+      // Obtener el balance del contrato
+      await this.updateContractBalance();
+      
       return true;
     } catch (error) {
       console.error('Error al inicializar el contrato:', error);
@@ -349,19 +390,53 @@ export class EtherService {
       const amountStr = String(amount);
       const amountInWei = ethers.utils.parseEther(amountStr);
 
+      // El contrato requiere fondos para enviar, así que verificamos si tiene suficiente balance
+      const contractBalance = ethers.utils.formatEther(await this.contract.getContractBalance());
+      
+      if (Number(contractBalance) < Number(amount)) {
+        // Si el contrato no tiene suficiente balance, primero hacemos un depósito
+        const depositTx = await this.contract.deposit({
+          value: amountInWei
+        });
+        await depositTx.wait();
+      }
+
+      // Ahora enviamos la transacción a través del contrato
       const tx = await this.contract.sendTransaction(
         recipient,
-        amountInWei,
-        {
-          value: amountInWei._hex
-        }
+        amountInWei
       );
 
       await tx.wait();
       await this.updateBalance();
+      await this.updateContractBalance();
       return tx.hash;
     } catch (error) {
       console.error('Error al enviar la transacción a través del contrato:', error);
+      return null;
+    }
+  }
+
+  async depositToContract(amount: string): Promise<string | null> {
+    if (!this.contract || !amount) {
+      console.error('Datos de depósito inválidos');
+      return null;
+    }
+
+    try {
+      const amountStr = String(amount);
+      const amountInWei = ethers.utils.parseEther(amountStr);
+
+      const tx = await this.contract.deposit({
+        value: amountInWei
+      });
+
+      await tx.wait();
+      await this.updateBalance();
+      await this.updateContractBalance();
+      return tx.hash;
+    } catch (error) {
+      console.error('Error al depositar en el contrato:', error);
       return null;
     }
   }
@@ -372,6 +447,10 @@ export class EtherService {
 
   getNetworkCurrency(): string {
     return this.network()?.symbol || 'ETH';
+  }
+
+  getContractBalanceFormatted(): string {
+    return this.contractBalance();
   }
 
   // Método para obtener transacciones de un servicio externo y actualizar el signal
