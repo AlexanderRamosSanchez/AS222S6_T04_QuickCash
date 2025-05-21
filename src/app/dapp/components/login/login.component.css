@@ -1,5 +1,11 @@
 /* src/app/dapp/components/login/login.component.css */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Estilos Generales */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 .login-container {
   display: flex;
@@ -11,6 +17,7 @@
   font-family: "Inter", sans-serif;
   position: relative;
   overflow: hidden;
+  color: #ffffff;
 }
 
 .login-container::before {
@@ -25,6 +32,7 @@
   z-index: 0;
 }
 
+/* Logo */
 .logo-container {
   display: flex;
   align-items: center;
@@ -39,9 +47,40 @@
   filter: drop-shadow(0 0 8px rgba(255, 75, 43, 0.4));
 }
 
+h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ff4b2b;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(255, 75, 43, 0.3);
+}
+
+h2 {
+  color: #ffffff;
+  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 16px;
+  margin-top: 24px;
+}
+
+h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  margin: 0 0 8px 0;
+}
+
+/* Login Card */
 .login-card {
   position: relative;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(28, 19, 43, 0.9);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 24px;
@@ -58,22 +97,7 @@
 .login-description {
   color: rgba(255, 255, 255, 0.7);
   margin-bottom: 30px;
-  font-size: 14px;
-}
-
-h1 {
-  font-size: 24px;
-  font-weight: 700;
-  color: #ff4b2b;
-  margin: 0;
-  text-shadow: 0 0 10px rgba(255, 75, 43, 0.3);
-}
-
-h2 {
-  color: #ffffff;
-  margin-bottom: 10px;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 15px;
 }
 
 .form-group {
@@ -175,22 +199,19 @@ input::placeholder {
   left: 100%;
 }
 
-.secondary-button {
-  background: linear-gradient(to right, #ff4b2b, #ff416c);
+.login-footer {
+  margin-top: 24px;
+}
+
+.intro-link {
   color: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  padding: 14px 24px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  width: 100%;
+  text-decoration: none;
+  font-size: 14px;
   transition: all 0.3s;
 }
 
-.secondary-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
+.intro-link:hover {
+  color: #ff4b2b;
 }
 
 /* Modal de Wallet */
@@ -224,6 +245,29 @@ input::placeholder {
   animation: scaleIn 0.3s ease-out;
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: white;
+  /* Mejora de la barra de desplazamiento */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 75, 43, 0.5) rgba(28, 19, 43, 0.3);
+}
+
+/* Estilos de scrollbar para Chrome, Edge y Safari */
+.wallet-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.wallet-modal::-webkit-scrollbar-track {
+  background: rgba(28, 19, 43, 0.3);
+  border-radius: 8px;
+}
+
+.wallet-modal::-webkit-scrollbar-thumb {
+  background: rgba(255, 75, 43, 0.5);
+  border-radius: 8px;
+  border: 2px solid rgba(28, 19, 43, 0.3);
+}
+
+.wallet-modal::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 75, 43, 0.7);
 }
 
 .ethereum-wallets-modal {
@@ -375,47 +419,6 @@ input::placeholder {
   font-size: 14px;
 }
 
-.email-option {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.email-input {
-  padding: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  font-size: 16px;
-  background-color: rgba(255, 255, 255, 0.05);
-  color: white;
-}
-
-.email-input:focus {
-  border-color: #ff4b2b;
-  outline: none;
-}
-
-.email-input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.email-button {
-  background: linear-gradient(to right, #ff4b2b, #ff416c);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  padding: 14px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.email-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 75, 43, 0.4);
-}
-
 /* Opciones de Wallet Ethereum */
 .wallet-options-container {
   display: flex;
@@ -428,21 +431,29 @@ input::placeholder {
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   max-height: 400px;
   overflow-y: auto;
+  /* Mejora de la barra de desplazamiento */
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  scrollbar-color: rgba(255, 75, 43, 0.5) rgba(28, 19, 43, 0.3);
 }
 
+/* Estilos de scrollbar para Chrome, Edge y Safari */
 .wallet-options::-webkit-scrollbar {
   width: 6px;
 }
 
 .wallet-options::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(28, 19, 43, 0.3);
+  border-radius: 6px;
 }
 
 .wallet-options::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
+  background: rgba(255, 75, 43, 0.5);
+  border-radius: 6px;
+  border: 1px solid rgba(28, 19, 43, 0.3);
+}
+
+.wallet-options::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 75, 43, 0.7);
 }
 
 .wallet-info {
@@ -497,16 +508,22 @@ input::placeholder {
   color: white;
 }
 
-h3 {
+.secondary-button {
+  background: linear-gradient(to right, #ff4b2b, #ff416c);
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 14px 24px;
   font-size: 16px;
-  font-weight: 600;
-  color: white;
-  margin-bottom: 16px;
-  margin-top: 24px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.3s;
 }
 
-h3:first-child {
-  margin-top: 0;
+.secondary-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
 .info-card {
@@ -539,13 +556,6 @@ h3:first-child {
 .info-icon i {
   font-size: 20px;
   color: white;
-}
-
-.info-content h4 {
-  font-size: 16px;
-  font-weight: 600;
-  color: white;
-  margin: 0 0 8px 0;
 }
 
 .info-content p {
@@ -626,6 +636,7 @@ h3:first-child {
   margin: 20px 0;
 }
 
+/* Animaciones */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -664,10 +675,18 @@ h3:first-child {
   }
 }
 
-/* Responsive */
+/* Mejoras Responsive */
 @media (max-width: 992px) {
   .ethereum-wallets-modal {
     max-width: 700px;
+  }
+}
+
+@media (max-width: 768px) {
+  .login-car  {
+    .ethereum-wallets-modal {
+      max-width: 700px;
+    }
   }
 }
 
@@ -710,9 +729,27 @@ h3:first-child {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 576px) {
   .login-card {
     padding: 25px 15px;
+  }
+  
+  h1 {
+    font-size: 22px;
+  }
+  
+  h2 {
+    font-size: 20px;
+  }
+  
+  h3 {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 20px 15px;
   }
   
   h1 {

@@ -1,9 +1,9 @@
 import { Component } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { FormsModule } from "@angular/forms"
+import { Router } from "@angular/router"
 import { AuthService } from "../../services/auth.service"
 import { EtherService } from "../../services/ether.service"
-import { Router } from "@angular/router"
 
 @Component({
   selector: "app-login",
@@ -39,6 +39,10 @@ export class LoginComponent {
 
   get showEthereumWallets(): boolean {
     return this.modalState === 'ethereum-wallets';
+  }
+
+  navigateToIntro(): void {
+    this.router.navigate(["/intro"]);
   }
 
   login(): void {

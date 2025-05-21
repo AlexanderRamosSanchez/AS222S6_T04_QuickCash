@@ -151,27 +151,35 @@
     flex-shrink: 0;
 }
 
-/* Estilos para el indicador de cambio de red */
+/* Estilos corregidos para el indicador de cambio de red */
 .network-switching-indicator {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 16px;
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(145deg, #3a2a50 0%, #332347 100%);
+    color: #e4e0ee;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     margin-top: 8px;
+    border: 1px solid rgba(255, 94, 58, 0.2);
 }
 
 .spinner {
     width: 24px;
     height: 24px;
-    border: 3px solid rgba(0, 0, 0, 0.1);
+    border: 3px solid rgba(228, 224, 238, 0.2);
     border-radius: 50%;
-    border-top-color: #627eea;
+    border-top-color: #ff5e3a;
     animation: spin 1s ease-in-out infinite;
     margin-bottom: 8px;
+}
+
+.network-switching-indicator p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 @keyframes spin {

@@ -34,14 +34,14 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.authService.isLoggedIn()) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/introduction']);
     }
   }
 
   logout(): void {
     this.authService.logout();
     this.etherService.disconnect();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/introduction']);
   }
 
   selectTab(tab: 'overview' | 'send' | 'transactions' | 'contacts'): void {
