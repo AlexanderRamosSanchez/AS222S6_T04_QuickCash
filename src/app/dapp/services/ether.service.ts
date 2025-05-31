@@ -441,6 +441,21 @@ export class EtherService {
     }
   }
 
+  // Método público para actualizar el balance manualmente
+  async updateBalanceEth(): Promise<void> {
+    if (this.provider && this.currentAccount()) {
+      try {
+        const balance = await this.provider.getBalance(this.currentAccount());
+        this.balance.set(ethers.utils.formatEther(balance));
+        return Promise.resolve();
+      } catch (error) {
+        console.error('Error al actualizar el balance:', error);
+        return Promise.reject(error);
+      }
+    }
+    return Promise.resolve();
+  }
+
   getNetworkName(): string {
     return this.network()?.name || 'No conectado';
   }

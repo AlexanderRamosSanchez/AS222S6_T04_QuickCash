@@ -4,5 +4,5 @@ export interface Contact {
     name: string;
     address: string;
     notes?: string;
-    createdAt: number;
+    createdAt: Date;
 }

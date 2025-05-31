@@ -1,0 +1,127 @@
+<!-- Wallet Modals -->
+<div *ngIf="showWalletOptions" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+  <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 dark:border-gray-700 animate-fadeIn" (click)="$event.stopPropagation()">
+    <!-- Wallet Options Modal -->
+    <div *ngIf="modalState === 'wallet-options'">
+      <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Conectar Wallet</h2>
+        <button (click)="closeWalletOptions()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <button 
+          (click)="selectWalletType('ethereum')"
+          [disabled]="!isMetaMaskAvailable"
+          class="w-full flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+          <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mr-4">
+            <span class="text-blue-600 dark:text-blue-400 font-bold">Ξ</span>
+          </div>
+          <div class="text-left">
+            <span class="text-gray-900 dark:text-white font-medium block">Ethereum</span>
+            <span *ngIf="!isMetaMaskAvailable" class="text-red-500 text-xs">MetaMask no detectado</span>
+          </div>
+        </button>
+
+        <div *ngIf="!isMetaMaskAvailable" class="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+          <p class="text-yellow-800 dark:text-yellow-200 text-sm">
+            Para conectar tu wallet, necesitas instalar MetaMask. 
+            <a href="https://metamask.io" target="_blank" class="underline hover:no-underline">Descargar MetaMask</a>
+          </p>
+        </div>
+
+        <div class="text-center py-4">
+          <span class="text-gray-500 dark:text-gray-400 text-sm">O continúa sin wallet</span>
+        </div>
+
+        <button 
+          (click)="continueWithoutWallet()"
+          class="w-full py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
+          Continuar sin wallet
+        </button>
+      </div>
+    </div>
+
+    <!-- Ethereum Wallets Modal -->
+    <div *ngIf="modalState === 'ethereum-wallets'">
+      <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+        <button (click)="backToWalletTypes()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Wallets Ethereum</h2>
+        <button (click)="closeWalletOptions()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <button 
+          (click)="selectWallet('metamask')"
+          [disabled]="!isMetaMaskAvailable"
+          class="w-full flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+          <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center mr-4">
+            <span class="text-orange-600 dark:text-orange-400 text-xl font-bold">M</span>
+          </div>
+          <div class="text-left">
+            <span class="text-gray-900 dark:text-white font-medium block">MetaMask</span>
+            <span class="text-gray-500 dark:text-gray-400 text-sm">Wallet más popular</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- MetaMask Connection Modal -->
+    <div *ngIf="modalState === 'connecting-metamask'">
+      <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+        <button (click)="backToWalletTypes()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Conectando MetaMask</h2>
+        <button (click)="closeWalletOptions()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="p-6 text-center">
+        <div class="w-20 h-20 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div *ngIf="isConnecting" class="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+          <span *ngIf="!isConnecting" class="text-orange-600 dark:text-orange-400 text-2xl font-bold">M</span>
+        </div>
+
+        <div *ngIf="isConnecting">
+          <p class="text-gray-600 dark:text-gray-300 mb-6">Conectando con MetaMask...</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Por favor, confirma la conexión en MetaMask</p>
+        </div>
+
+        <div *ngIf="!isConnecting && errorMessage">
+          <p class="text-red-500 mb-6">{{ errorMessage }}</p>
+        </div>
+
+        <div class="space-y-3 mt-6">
+          <button 
+            *ngIf="!isConnecting"
+            (click)="connectMetaMask()"
+            class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors duration-200">
+            Reintentar
+          </button>
+          <button 
+            (click)="continueWithoutWallet()"
+            class="w-full py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
+            Continuar sin wallet
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

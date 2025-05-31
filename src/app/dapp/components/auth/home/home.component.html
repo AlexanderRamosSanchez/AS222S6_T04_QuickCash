@@ -1,0 +1,235 @@
+<div [class]="isDarkMode ? 'dark' : ''" class="min-h-screen transition-colors duration-300">
+  <!-- Header Navigation -->
+  <header class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <!-- Logo -->
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-sm">Q</span>
+          </div>
+          <span class="text-xl font-bold text-gray-900 dark:text-white">QuickCash</span>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="hidden md:flex items-center space-x-8">
+          <button (click)="scrollToSection('inicio')"
+            class="text-orange-500 hover:text-orange-600 transition-colors duration-200 font-medium">
+            Inicio
+          </button>
+          <button (click)="scrollToSection('que-es')"
+            class="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400 transition-colors duration-200 font-medium">
+            ¿Qué es?
+          </button>
+          <button (click)="scrollToSection('objetivos')"
+            class="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400 transition-colors duration-200 font-medium">
+            Objetivos
+          </button>
+          <button (click)="scrollToSection('equipo')"
+            class="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400 transition-colors duration-200 font-medium">
+            Equipo
+          </button>
+        </nav>
+
+        <!-- Right side actions -->
+        <div class="flex items-center space-x-4">
+
+          <!-- Register Button -->
+          <button 
+            (click)="openRegisterModal()"
+            class="px-4 py-2 bg-transparent hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-500 border border-orange-500 rounded-lg font-medium transition-colors duration-200">
+            Sing up
+          </button>
+
+          <!-- Sign In Button -->
+          <button 
+            (click)="openLoginModal()"
+            class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition-colors duration-200">
+            Login
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="bg-white dark:bg-gray-900 transition-colors duration-300">
+    <!-- Introduction View -->
+    <div class="relative">
+      <!-- Hero Section - Inicio -->
+      <section id="inicio" 
+        class="relative bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 dark:from-gray-950 dark:via-purple-950 dark:to-gray-950 overflow-hidden pt-16">
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+          <!-- Main Hero Content -->
+          <div class="text-center">
+            <p class="text-orange-400 text-lg font-medium mb-6">Liderar la carga hacia nuevas fronteras</p>
+            <h1 class="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight">
+              Bienvenido<br>
+              A tu billetera digital<br>
+              <span class="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">QuickCash</span>
+            </h1>
+            <p class="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
+              ¡Accede a una formación gratuita, completa y de alta calidad para convertirte en un experto en Web3!
+            </p>
+            <p class="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
+              ¡Conecta tu cuenta de MetaMask!
+            </p>
+            <button 
+              (click)="openLoginModal()"
+              class="inline-flex items-center px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-all duration-200 transform hover:scale-105">
+              Empieza a aprender
+              <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section - ¿Qué es? -->
+      <section id="que-es" class="py-20 bg-white dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">¿Qué es QuickCash?</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              QuickCash es una plataforma financiera descentralizada que utiliza tecnología blockchain para ofrecer servicios financieros rápidos, seguros y accesibles.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-8">
+            <div class="text-center p-8 rounded-2xl bg-gray-50 dark:bg-gray-800 hover:shadow-lg transition-all duration-300">
+              <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+              </div>
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Seguro</h3>
+              <p class="text-gray-600 dark:text-gray-300">Transacciones protegidas por la tecnología blockchain</p>
+            </div>
+
+            <div class="text-center p-8 rounded-2xl bg-gray-50 dark:bg-gray-800 hover:shadow-lg transition-all duration-300">
+              <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+              </div>
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Rápido</h3>
+              <p class="text-gray-600 dark:text-gray-300">Transferencias instantáneas a cualquier parte del mundo</p>
+            </div>
+
+            <div class="text-center p-8 rounded-2xl bg-gray-50 dark:bg-gray-800 hover:shadow-lg transition-all duration-300">
+              <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                </svg>
+              </div>
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Accesible</h3>
+              <p class="text-gray-600 dark:text-gray-300">Comisiones bajas y sin requisitos mínimos</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Objectives Section - Objetivos -->
+      <section id="objetivos" class="py-20 bg-gray-50 dark:bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Nuestros Objetivos</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Revolucionar el sector financiero mediante tecnología blockchain, democratizando el acceso a servicios financieros de calidad.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
+              <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center mb-6">
+                <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Inclusión Financiera</h3>
+              <p class="text-gray-600 dark:text-gray-300">Brindar acceso a servicios financieros a personas no bancarizadas en todo el mundo.</p>
+            </div>
+
+            <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
+              <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-6">
+                <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+              </div>
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Reducir Costos</h3>
+              <p class="text-gray-600 dark:text-gray-300">Minimizar las comisiones y costos operativos mediante la automatización blockchain.</p>
+            </div>
+
+            <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
+              <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-6">
+                <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+              </div>
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Máxima Seguridad</h3>
+              <p class="text-gray-600 dark:text-gray-300">Implementar los más altos estándares de seguridad y transparencia en todas las transacciones.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Team Section - Equipo -->
+      <section id="equipo" class="py-20 bg-white dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Nuestro Equipo</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Conoce a los profesionales que están revolucionando el mundo de las finanzas descentralizadas.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div class="text-center p-8 rounded-2xl bg-gray-50 dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+              <div class="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden bg-gradient-to-r from-orange-400 to-red-500 p-1">
+                <div class="w-full h-full rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                  <span class="text-2xl font-bold text-gray-600 dark:text-gray-300">DA</span>
+                </div>
+              </div>
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Diego Alexander RAMOS SANCHEZ</h3>
+              <p class="text-orange-500 font-medium mb-3">Analista de Sistemas & Fundador</p>
+            </div>
+
+            <div class="text-center p-8 rounded-2xl bg-gray-50 dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+              <div class="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden bg-gradient-to-r from-purple-400 to-pink-500 p-1">
+                <div class="w-full h-full rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                  <span class="text-2xl font-bold text-gray-600 dark:text-gray-300">AC</span>
+                </div>
+              </div>
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Alexa Cristhelly REJAS CARRASCO</h3>
+              <p class="text-purple-500 font-medium mb-3">Analista de Sistemas</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Login Component -->
+  <app-login 
+    [showModal]="showLoginModal"
+    (showModalChange)="showLoginModal = $event"
+    (loginSuccess)="onLoginSuccess()"
+    (switchToRegister)="onSwitchToRegister()">
+  </app-login>
+
+  <!-- Register Component -->
+  <app-register 
+    [showModal]="showRegisterModal"
+    (showModalChange)="showRegisterModal = $event"
+    (switchToLogin)="onSwitchToLogin()">
+  </app-register>
+
+  <!-- Wallet Modals -->
+  <app-wallet 
+    [modalState]="modalState" 
+    [isDarkMode]="isDarkMode"
+    (modalStateChange)="onModalStateChange($event)">
+  </app-wallet>
+</div>
