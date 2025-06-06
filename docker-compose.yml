@@ -1,0 +1,7 @@
+version: '3.8'
+
+services:
+  quickcash:
+    image: diegoramos678/fe-quickcash:latest
+    ports:
+      - "8080:80"
