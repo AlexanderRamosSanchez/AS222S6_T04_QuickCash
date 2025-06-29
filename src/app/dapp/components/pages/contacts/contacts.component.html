@@ -9,13 +9,13 @@
     </button>
   </div>
 
-  <!-- Search and Add Contact Form -->
+  <!-- Search -->
   <div *ngIf="!showAddContact" class="mb-6">
     <div class="relative">
       <input 
         type="text" 
-        [(ngModel)]="searchTerm"
-        (input)="searchContacts()"
+        [value]="searchTerm()"
+        (input)="onSearchChange($event)"
         placeholder="Buscar contactos..."
         class="w-full px-4 py-3 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
       <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,7 +55,7 @@
         class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
     </div>
     
-    <!-- Error/Success Messages -->
+    <!-- Error Message -->
     <div *ngIf="error" class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
       <p class="text-red-700 dark:text-red-300 text-sm">{{ error }}</p>
     </div>
@@ -79,19 +79,29 @@
     <p class="text-green-700 dark:text-green-300 text-sm">{{ success }}</p>
   </div>
 
+  <!-- Loading State -->
+  <div *ngIf="isLoadingContacts" class="text-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto"></div>
+    <p class="text-gray-500 dark:text-gray-400 mt-4">Cargando contactos...</p>
+  </div>
+
   <!-- Contacts List -->
-  <div class="space-y-4">
+  <div *ngIf="!isLoadingContacts" class="space-y-4">
     <!-- No contacts -->
-    <div *ngIf="filteredContacts.length === 0" class="text-center py-12">
+    <div *ngIf="!hasFilteredContacts" class="text-center py-12">
       <svg class="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
       </svg>
-      <p class="text-gray-500 dark:text-gray-400 text-lg font-medium">No hay contactos</p>
-      <p class="text-gray-400 dark:text-gray-500 text-sm mt-2">Añade contactos para facilitar tus transacciones</p>
+      <p class="text-gray-500 dark:text-gray-400 text-lg font-medium">
+        {{ hasContacts ? 'No se encontraron contactos' : 'No hay contactos' }}
+      </p>
+      <p class="text-gray-400 dark:text-gray-500 text-sm mt-2">
+        {{ hasContacts ? 'Intenta con otros términos de búsqueda' : 'Añade contactos para facilitar tus transacciones' }}
+      </p>
     </div>
 
     <!-- Contact list -->
-    <div *ngFor="let contact of filteredContacts" class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
+    <div *ngFor="let contact of contactsList" class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
       <!-- Contact info -->
       <div class="flex items-center space-x-4">
         <!-- Avatar -->

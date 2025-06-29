@@ -1,15 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter, effect } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EtherService } from '../../../services/ether.service';
-
-interface Contact {
-  id: string;
-  name: string;
-  address: string;
-  notes?: string;
-  createdAt: Date;
-}
+import { ContactService, Contact, ContactCreateRequest } from '../../../services/contact.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-send-transaction',
@@ -36,8 +30,8 @@ export class SendTransactionComponent implements OnInit {
   isContractInitialized = false;
   contractBalance = '0';
 
-  // Contact management
-  contacts: Contact[] = [];
+  // Contact management using signals
+  contacts = signal<Contact[]>([]);
   selectedContactId = '';
   showAddContact = false;
   newContact = {
@@ -51,8 +45,12 @@ export class SendTransactionComponent implements OnInit {
   networkSymbol = 'ETH';
   isWalletConnected = false;
 
-  constructor(private etherService: EtherService) {
-    // React to service signals
+  constructor(
+    private etherService: EtherService,
+    private contactService: ContactService,
+    private authService: AuthService
+  ) {
+    // React to ether service signals
     effect(() => {
       this.balance = this.etherService.balance();
     });
@@ -77,6 +75,12 @@ export class SendTransactionComponent implements OnInit {
         this.isContractInitialized = true;
       }
     });
+
+    // React to contact service signals
+    effect(() => {
+      const serviceContacts = this.contactService.contacts();
+      this.contacts.set(serviceContacts);
+    }, { allowSignalWrites: true });
   }
 
   ngOnInit(): void {
@@ -84,18 +88,21 @@ export class SendTransactionComponent implements OnInit {
   }
 
   loadContacts(): void {
-    const savedContacts = localStorage.getItem('quickcash_contacts');
-    if (savedContacts) {
-      this.contacts = JSON.parse(savedContacts);
+    // Only load contacts if user is logged in
+    if (this.authService.isLoggedIn()) {
+      this.contactService.loadUserContacts().subscribe({
+        next: (contacts) => {
+          console.log('Contactos cargados en send-transaction:', contacts.length);
+        },
+        error: (error) => {
+          console.error('Error cargando contactos:', error);
+        }
+      });
     }
   }
 
-  saveContacts(): void {
-    localStorage.setItem('quickcash_contacts', JSON.stringify(this.contacts));
-  }
-
   selectContact(contactId: string): void {
-    const contact = this.contacts.find(c => c.id === contactId);
+    const contact = this.contacts().find(c => c.id === contactId);
     if (contact) {
       this.recipientAddress = contact.address;
       this.selectedContactId = contactId;
@@ -127,7 +134,8 @@ export class SendTransactionComponent implements OnInit {
       return;
     }
     
-    if (this.contacts.some(c => c.name.toLowerCase() === this.newContact.name.toLowerCase())) {
+    // Check for duplicates using the service
+    if (this.contactService.nameExists(this.newContact.name)) {
       this.sendError = 'Ya existe un contacto con este nombre';
       return;
     }
@@ -137,26 +145,30 @@ export class SendTransactionComponent implements OnInit {
       return;
     }
     
-    if (this.contacts.some(c => c.address.toLowerCase() === this.newContact.address.toLowerCase())) {
+    if (this.contactService.addressExists(this.newContact.address)) {
       this.sendError = 'Ya existe un contacto con esta dirección';
       return;
     }
     
-    const contact: Contact = {
-      id: Date.now().toString(),
+    // Create contact using the service
+    const contactData: ContactCreateRequest = {
       name: this.newContact.name.trim(),
       address: this.newContact.address,
-      notes: this.newContact.notes.trim(),
-      createdAt: new Date()
+      notes: this.newContact.notes.trim() || undefined
     };
-    
-    this.contacts.push(contact);
-    this.saveContacts();
-    this.recipientAddress = contact.address;
-    this.selectedContactId = contact.id;
-    this.resetNewContact();
-    this.showAddContact = false;
-    this.sendError = '';
+
+    this.contactService.createContact(contactData).subscribe({
+      next: (newContact) => {
+        this.recipientAddress = newContact.address;
+        this.selectedContactId = newContact.id;
+        this.resetNewContact();
+        this.showAddContact = false;
+        this.sendError = '';
+      },
+      error: (error) => {
+        this.sendError = error.message;
+      }
+    });
   }
 
   toggleContractUse(): void {
@@ -261,8 +273,10 @@ export class SendTransactionComponent implements OnInit {
         this.transactionSent.emit(txHash);
         this.closeTransactionModal();
         
-        // Suggest adding contact if address is not saved
-        if (!this.contacts.some(c => c.address.toLowerCase() === this.recipientAddress.toLowerCase())) {
+        // Suggest adding contact if address is not saved and user is logged in
+        const contactExists = this.contacts().some(c => c.address.toLowerCase() === this.recipientAddress.toLowerCase());
+        
+        if (!contactExists && this.authService.isLoggedIn()) {
           setTimeout(() => {
             if (confirm('¿Deseas guardar esta dirección como un nuevo contacto?')) {
               this.newContact.address = this.recipientAddress;
@@ -308,5 +322,18 @@ export class SendTransactionComponent implements OnInit {
   get formattedContractBalance(): string {
     const bal = Number.parseFloat(this.contractBalance);
     return bal.toFixed(4);
+  }
+
+  // Getters for template
+  get contactsList(): Contact[] {
+    return this.contacts();
+  }
+
+  get hasContacts(): boolean {
+    return this.contacts().length > 0;
+  }
+
+  get isUserLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
   }
 }

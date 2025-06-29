@@ -3,6 +3,8 @@ import { CommonModule } from "@angular/common"
 import { Router } from "@angular/router"
 import { FormsModule } from "@angular/forms"
 import { EtherService } from "../../../services/ether.service"
+import { AuthService } from "../../../services/auth.service"
+import { ContactService } from "../../../services/contact.service"
 import { TransactionHistoryComponent } from "../transaction-history/transaction-history.component"
 import { NetworkDisplayComponent } from "../../conection/network-display/network-display.component"
 import { SendTransactionComponent } from "../send-transaction/send-transaction.component"
@@ -41,11 +43,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // Active view
   activeView: 'history' | 'contacts' | 'settings' = 'history'
 
+  // User authentication state
+  isUserLoggedIn = false
+  currentUser: any = null
+
   constructor(
     private router: Router,
     private etherService: EtherService,
+    private authService: AuthService,
+    private contactService: ContactService
   ) {
-    // Use effects to react to signal changes
+    // Use effects to react to signal changes for wallet
     effect(() => {
       this.isWalletConnected = this.etherService.isConnected()
       if (!this.isWalletConnected) {
@@ -72,14 +80,44 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.networkName = network?.name || ""
       this.networkSymbol = network?.symbol || "ETH"
     })
+
+    // Use effects to react to authentication changes
+    effect(() => {
+      this.isUserLoggedIn = this.authService.isAuthenticated()
+      this.currentUser = this.authService.currentUser()
+      
+      if (this.currentUser) {
+        this.userName = this.currentUser.username
+      }
+    })
   }
 
   ngOnInit(): void {
-    // No need for subscriptions with signals
+    // Check if user is logged in
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(["/introduction"])
+      return
+    }
+
+    // Load user contacts when component initializes
+    this.loadUserContacts()
   }
 
   ngOnDestroy(): void {
-    // No subscriptions to unsubscribe from
+    // No subscriptions to unsubscribe from with signals
+  }
+
+  private loadUserContacts(): void {
+    if (this.authService.isLoggedIn()) {
+      this.contactService.loadUserContacts().subscribe({
+        next: (contacts) => {
+          console.log('Contactos cargados:', contacts.length)
+        },
+        error: (error) => {
+          console.error('Error cargando contactos:', error)
+        }
+      })
+    }
   }
 
   toggleTheme(): void {
@@ -89,6 +127,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   async connectWallet(): Promise<void> {
     try {
       await this.etherService.connectWallet()
+      
+      // Update user's MetaMask address if wallet is connected
+      if (this.isWalletConnected && this.walletAddress && this.currentUser) {
+        this.updateUserMetamaskAddress(this.walletAddress)
+      }
     } catch (error) {
       console.error("Error connecting wallet:", error)
     }
@@ -96,6 +139,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   async disconnectWallet(): Promise<void> {
     await this.etherService.disconnect()
+  }
+
+  private updateUserMetamaskAddress(address: string): void {
+    if (!this.currentUser) return
+    
+    this.authService.updateMetamaskAddress(this.currentUser.id, address).subscribe({
+      next: (updatedUser) => {
+        console.log('Dirección de MetaMask actualizada:', updatedUser.metamaskAddress)
+      },
+      error: (error) => {
+        console.error('Error actualizando dirección de MetaMask:', error)
+      }
+    })
   }
 
   openSendModal(): void {
@@ -112,37 +168,53 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
+    // Disconnect wallet
     this.etherService.disconnect()
+    
+    // Clear contacts
+    this.contactService.clearContacts()
+    
+    // Logout user
+    this.authService.logout()
+    
+    // Navigate to introduction
     this.router.navigate(["/introduction"])
   }
 
   onNetworkChanged(network: Network): void {
-    // Handle network change event from network-display component
     console.log("Network changed to:", network)
-    // You can add additional logic here if needed
   }
 
-  // Método para refrescar el balance
   async refreshBalance(): Promise<void> {
-    if (this.isRefreshingBalance || !this.isWalletConnected) return;
+    if (this.isRefreshingBalance || !this.isWalletConnected) return
     
-    this.isRefreshingBalance = true;
+    this.isRefreshingBalance = true
     try {
-      // Actualizar el balance usando el servicio
-      await this.etherService.updateBalanceEth();
+      await this.etherService.updateBalanceEth()
+      
+      // Also update user balance in backend if needed
+      if (this.currentUser && this.balance) {
+        const balanceNumber = parseFloat(this.balance)
+        this.authService.updateUserBalance(this.currentUser.id, balanceNumber).subscribe({
+          next: (updatedUser) => {
+            console.log('Saldo actualizado en backend:', updatedUser.ethBalance)
+          },
+          error: (error) => {
+            console.error('Error actualizando saldo en backend:', error)
+          }
+        })
+      }
     } catch (error) {
-      console.error("Error refreshing balance:", error);
+      console.error("Error refreshing balance:", error)
     } finally {
-      // Esperar un momento para mostrar la animación
       setTimeout(() => {
-        this.isRefreshingBalance = false;
-      }, 500);
+        this.isRefreshingBalance = false
+      }, 500)
     }
   }
 
-  // Métodos para cambiar la vista activa
   setActiveView(view: 'history' | 'contacts' | 'settings'): void {
-    this.activeView = view;
+    this.activeView = view
   }
 
   get formattedBalance(): string {
@@ -153,6 +225,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   get formattedAddress(): string {
     if (!this.walletAddress) return ""
     return `${this.walletAddress.slice(0, 6)}...${this.walletAddress.slice(-4)}`
+  }
+
+  get displayUserName(): string {
+    if (this.currentUser?.username) {
+      return this.currentUser.username
+    }
+    if (this.walletAddress) {
+      return `${this.walletAddress.slice(0, 6)}...${this.walletAddress.slice(-4)}`
+    }
+    return "Usuario"
   }
 
   isValidAddress(address: string): boolean {
