@@ -31,6 +31,6 @@ spec:
   ports:
     - port: 80          # Cambiado a 80 para que coincida con el contenedor
       targetPort: 80    # Cambiado a 80 para que coincida con el contenedor
-      nodePort: 30000   # Puedes mantener este puerto o cambiarlo si es necesario
+      nodePort: 30000   # Puedes mantener este puerto
   selector:
     app: quickcashv2
