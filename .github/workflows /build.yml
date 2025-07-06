@@ -5,7 +5,7 @@ on:
       - develop-new
 
 jobs:
-  #SONARCLOUD PROCESS
+  #SONARCLOUD
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
